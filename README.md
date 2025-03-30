@@ -158,16 +158,6 @@ Default test credentials:
 - **Username**: `admin1`
 - **Password**: `password123`
 
-## 📝 API Endpoints
-
-| Endpoint         | Method | Description     |
-| ---------------- | ------ | --------------- |
-| `/api/login`     | POST   | User login      |
-| `/api/tasks`     | GET    | Get all tasks   |
-| `/api/tasks`     | POST   | Create new task |
-| `/api/tasks/:id` | PUT    | Update task     |
-| `/api/tasks/:id` | DELETE | Delete task     |
-
 ## 🧑‍💻 Development
 
 ### Scripts
@@ -204,9 +194,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📧 Contact
 
 For questions or support, please contact:  
-[Your Name] - [felmetamuktar23@gmail.com]  
-Project Link: [https://github.com/yourusername/task-management-system](https://github.com/yourusername/task-management-system)
+[Felmeta Muktar] - [felmetamuktar23@gmail.com]  
+Project Link: [https://github.com/Felmeta-M/task-management-system.git](https://github.com/Felmeta-M/task-management-system.git)
 
 ---
-
-**Happy Task Managing!** 🎉
