@@ -1,6 +1,6 @@
 # Task Management System
 
-![Task Management System Screenshot](./public/screenshot.png) <!-- Add a screenshot if available -->
+![Task Management System Screenshot](./public/Screenshot.png) <!-- Add a screenshot if available -->
 
 A full-featured task management application built with Next.js, Prisma, and modern web technologies. This system provides secure user authentication and complete CRUD functionality for tasks with a clean, responsive interface.
 
