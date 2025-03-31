@@ -71,9 +71,7 @@ A full-featured task management application built with Next.js, Prisma, Shadcn, 
 
    ```
 
-### Running the Application
-
-Start the development server:
+4. Start the development server:
 
 ```bash
 npm run dev
@@ -90,13 +88,13 @@ Default test credentials:
 
 ### Optional if you need new database or want to erase existing data and seed your own data
 
-4. Run database migrations:
+5. Run database migrations:
 
    ```bash
    npx prisma migrate dev --name init
    ```
 
-5. Seed the database (optional):
+6. Seed the database (optional):
    ```bash
    npx ts-node scripts/seed.ts
    ```
