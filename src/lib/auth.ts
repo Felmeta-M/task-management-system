@@ -2,6 +2,8 @@ import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
 import { prisma } from '@/lib/prisma';
 
+export const runtime = "nodejs"; // Force Node.js runtime
+
 const SECRET_KEY = process.env.JWT_SECRET || '123';
 if (!SECRET_KEY) throw new Error('JWT_SECRET is missing in enviroment variables');
 

@@ -69,15 +69,8 @@ A full-featured task management application built with Next.js, Prisma, and mode
 
    Edit the `.env` file with your configuration.
 
-4. Run database migrations:
-
-   ```bash
-   npx prisma migrate dev --name init
    ```
 
-5. Seed the database (optional):
-   ```bash
-   npx ts-node scripts/seed.ts
    ```
 
 ### Running the Application
@@ -89,6 +82,32 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## 🔒 Authentication
+
+Default test credentials:
+
+- **Username**: `admin1`
+- **Password**: `password123`
+
+### Optional if you need new database or want to erase existing data and seed your own data
+
+4. Run database migrations:
+
+   ```bash
+   npx prisma migrate dev --name init
+   ```
+
+5. Seed the database (optional):
+   ```bash
+   npx ts-node scripts/seed.ts
+   ```
+
+Then start the development server:
+
+```bash
+npm run dev
+```
 
 ## 📂 Project Structure
 
@@ -150,13 +169,6 @@ task-management-system/
 ├── package.json
 └── README.md
 ```
-
-## 🔒 Authentication
-
-Default test credentials:
-
-- **Username**: `admin1`
-- **Password**: `password123`
 
 ## 🧑‍💻 Development
 

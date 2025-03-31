@@ -10,7 +10,13 @@ export const metadata: Metadata = {
   description: "View task details.",
 };
 
-export default function TaskDetailPage({ params }: { params: { id: string } }) {
+interface PageProps {
+  params: {
+    id: string;
+  };
+}
+
+export default async function TaskDetailPage({ params }: PageProps) {
   // const { isValid } = validateRoute.sync();
   // if (!isValid) {
   //   return (

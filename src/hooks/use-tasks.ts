@@ -57,7 +57,7 @@ export const useUpdateTask = () => {
   const { updateTask: updateStoreTask } = useTaskStore();
   
   return useMutation({
-    mutationFn: ({ id, data }: { id: number; data: any }) => updateTask(id, data),
+    mutationFn: ({ id, data }: { id: number; data: unknown }) => updateTask(id, data),
     onMutate: async (variables) => {
       // await queryClient.cancelQueries(['task', variables.id]);
       // const previousTask = queryClient.getQueryData(['task', variables.id]);

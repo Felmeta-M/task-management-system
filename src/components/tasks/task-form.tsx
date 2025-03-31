@@ -60,19 +60,6 @@ export function TaskForm({ isEditMode = false, taskId }: TaskFormProps) {
     },
   });
 
-  // useEffect(() => {
-  //   if (isEditMode && taskData) {
-  //     form.reset({
-  //       title: taskData.title,
-  //       description: taskData.description || "",
-  //       status: taskData.status,
-  //       dueDate: taskData.dueDate ? new Date(taskData.dueDate) : undefined,
-  //     });
-  //   } else {
-  //     form.reset(); // Reset to defaultValues
-  //   }
-  // }, [form, isEditMode, taskData]);
-
   // only resetting form when taskdata is available and different from current values
   useEffect(() => {
     console.log("task data recieved:", taskData);
@@ -197,41 +184,90 @@ export function TaskForm({ isEditMode = false, taskId }: TaskFormProps) {
               <FormField
                 control={form.control}
                 name="dueDate"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Due Date</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            className={cn(
-                              "pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value ? (
-                              format(field.value, "PPP")
-                            ) : (
-                              <span>Pick a date</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="end">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          disabled={(date) => date < new Date()}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                render={({ field }) => {
+                  // today's date at midnight in local timezone
+                  const today = new Date();
+                  today.setHours(0, 0, 0, 0);
+
+                  return (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Due Date</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              className={cn(
+                                "pl-3 text-left font-normal",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value ? (
+                                format(field.value, "PPP")
+                              ) : (
+                                <span>Pick a date</span>
+                              )}
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="end">
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            disabled={{ before: today }}
+                            defaultMonth={field.value || today}
+                            initialFocus
+                            modifiers={{
+                              disabled: [
+                                {
+                                  before: new Date(
+                                    today.getFullYear(),
+                                    today.getMonth(),
+                                    today.getDate()
+                                  ),
+                                },
+                              ],
+                            }}
+                            modifiersClassNames={{
+                              disabled: "opacity-50 pointer-events-none",
+                            }}
+                            classNames={{
+                              months: "p-2",
+                              caption:
+                                "flex justify-center pt-1 relative items-center",
+                              caption_label: "text-sm font-medium",
+                              nav: "flex items-center",
+                              nav_button:
+                                "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100",
+                              nav_button_previous: "absolute left-1",
+                              nav_button_next: "absolute right-1",
+                              table: "w-full border-collapse space-y-1",
+                              head_row: "flex",
+                              head_cell:
+                                "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
+                              row: "flex w-full mt-2",
+                              cell: "h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+                              day: cn(
+                                "h-9 w-9 p-0 font-normal aria-selected:opacity-100 hover:bg-accent",
+                                "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                              ),
+                              day_selected:
+                                "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
+                              day_today: "bg-accent text-accent-foreground",
+                              day_disabled:
+                                "text-muted-foreground opacity-50 pointer-events-none",
+                              day_outside: "text-muted-foreground opacity-50",
+                              day_hidden: "invisible",
+                            }}
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
               />
             </div>
 

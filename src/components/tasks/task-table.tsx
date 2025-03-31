@@ -10,6 +10,7 @@ import {
   ColumnFiltersState,
   getSortedRowModel,
   getFilteredRowModel,
+  Row,
 } from "@tanstack/react-table";
 import {
   Table,
@@ -33,7 +34,7 @@ import {
 import { useRouter } from "next/navigation";
 
 import { Badge } from "@/components/ui/badge";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { DeleteConfirmationDialog } from "../delete-alert";
 import { Skeleton } from "../ui/skeleton";
 import {
@@ -57,6 +58,67 @@ import { Input } from "../ui/input";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
 }
+
+const ActionsCell = ({ row }: { row: Row<Task> }) => {
+  const router = useRouter();
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const { mutate: deleteTask } = useDeleteTask();
+
+  const handleEdit = () => router.push(`/tasks/edit/${row.original.id}`);
+
+  const handleDelete = () => {
+    deleteTask(row.original.id, {
+      onSuccess: () => {
+        setIsDeleteDialogOpen(false);
+      },
+      onError: (error) => {
+        console.log(error);
+      },
+    });
+  };
+
+  return (
+    <div className="flex flex-wrap gap-2">
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+            <MoreVertical className="h-4 w-4" />
+            <span className="sr-only">Actions</span>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem
+            onClick={(e) => {
+              e.stopPropagation();
+              handleEdit();
+            }}
+            className="cursor-pointer"
+          >
+            <Edit className="mr-2 h-4 w-4" />
+            Edit
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsDeleteDialogOpen(true);
+            }}
+            className="cursor-pointer text-red-600 focus:text-red-600"
+          >
+            <Trash2 className="mr-2 h-4 w-4" />
+            Delete
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <DeleteConfirmationDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        onConfirm={handleDelete}
+        title="Delete Task"
+        description="Are you sure you want to delete this task? This action cannot be undone."
+      />
+    </div>
+  );
+};
 
 export function TaskTable<TData extends { id: number }, TValue>({
   columns,
@@ -89,26 +151,6 @@ export function TaskTable<TData extends { id: number }, TValue>({
     router.push(`/tasks/${taskId}`);
   };
 
-  // const handleBulkDelete = () => {
-  //   const selectedIds = table
-  //     .getSelectedRowModel()
-  //     .rows.map((row) => (row.original as { id: number }).id);
-  //   if (selectedIds.length === 0) {
-  //     toast.error("No tasks selected for deletion.");
-  //     return;
-  //   }
-
-  //   deleteTasks(selectedIds, {
-  //     onSuccess: () => {
-  //       toast.success(`${selectedIds.length} task's deleted successfully`);
-  //       table.resetRowSelection();
-  //     },
-  //     onError: (error) => {
-  //       toast.error(`Error deleting tasks: ${error.message}`);
-  //     },
-  //   });
-  // };
-
   // Loading state
   if (isLoading) {
     return (
@@ -136,24 +178,6 @@ export function TaskTable<TData extends { id: number }, TValue>({
             className="pl-10 w-full"
           />
         </div>
-
-        {/* Bulk Actions (shown when rows are selected) */}
-        {/* {table.getSelectedRowModel().rows.length > 0 && (
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">
-              {table.getSelectedRowModel().rows.length} selected
-            </span>
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={handleBulkDelete}
-              className="h-8"
-            >
-              <Trash2 className="mr-2 h-4 w-4" />
-              Delete Selected
-            </Button>
-          </div>
-        )} */}
       </div>
 
       {/* Desktop Table */}
@@ -265,23 +289,6 @@ export function TaskTable<TData extends { id: number }, TValue>({
 
       {/* Mobile Cards */}
       <div className="md:hidden space-y-4">
-        {/* Bulk Actions for Mobile */}
-        {/* {table.getSelectedRowModel().rows.length > 0 && (
-          <div className="flex items-center justify-between p-2 bg-gray-100 rounded-md">
-            <span className="text-sm text-gray-600">
-              {table.getSelectedRowModel().rows.length} selected
-            </span>
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={handleBulkDelete}
-              className="h-8"
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
-          </div>
-        )} */}
-
         {table.getRowModel().rows.length ? (
           table.getRowModel().rows.map((row) => {
             const task = row.original as TData;
@@ -550,67 +557,7 @@ export const taskColumns: ColumnDef<Task>[] = [
   {
     id: "actions",
     header: "Actions",
-    cell: ({ row }) => {
-      const task = row.original;
-      const router = useRouter();
-      const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-      const { mutate: deleteTask } = useDeleteTask();
-
-      const handleEdit = () => router.push(`/tasks/edit/${task.id}`);
-
-      const handleDelete = () => {
-        deleteTask(task.id, {
-          onSuccess: () => {
-            setIsDeleteDialogOpen(false);
-          },
-          onError: (error) => {
-            console.log(error);
-          },
-        });
-      };
-
-      return (
-        <div className="flex flex-wrap gap-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                <MoreVertical className="h-4 w-4" />
-                <span className="sr-only">Actions</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleEdit();
-                }}
-                className="cursor-pointer"
-              >
-                <Edit className="mr-2 h-4 w-4" />
-                Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsDeleteDialogOpen(true);
-                }}
-                className="cursor-pointer text-red-600 focus:text-red-600"
-              >
-                <Trash2 className="mr-2 h-4 w-4" />
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <DeleteConfirmationDialog
-            open={isDeleteDialogOpen}
-            onOpenChange={setIsDeleteDialogOpen}
-            onConfirm={handleDelete}
-            title="Delete Task"
-            description="Are you sure you want to delete this task? This action cannot be undone."
-          />
-        </div>
-      );
-    },
+    cell: ({ row }) => <ActionsCell row={row} />,
     size: 80,
   },
 ];

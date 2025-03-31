@@ -5,6 +5,7 @@ import { DEFAULT_REDIRECT, PROTECTED_ROUTES, PUBLIC_ROUTES } from './config/rout
 
 export const config = {
   matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+  // runtime: 'experimental-edge', // or 'nodejs'
 };
 
 export async function middleware(request: NextRequest) {
@@ -80,3 +81,4 @@ export async function middleware(request: NextRequest) {
   // Allow all other routes
   return NextResponse.next();
 }
+// export const runtime = 'experimental-edge'; // or 'nodejs'
