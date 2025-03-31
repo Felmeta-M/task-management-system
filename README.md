@@ -67,10 +67,6 @@ A full-featured task management application built with Next.js, Prisma, Shadcn, 
 
    Edit the `.env` file with your configuration.
 
-   ```
-
-   ```
-
 4. Start the development server:
 
 ```bash
@@ -83,8 +79,17 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 Default test credentials:
 
-- **Username**: `admin1`
-- **Password**: `password123`
+- **Username**:
+
+```bash
+admin1
+```
+
+- **Password**:
+
+```bash
+password123
+```
 
 ### Optional if you need new database or want to erase existing data and seed your own data
 
