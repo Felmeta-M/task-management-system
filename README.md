@@ -38,8 +38,6 @@ A full-featured task management application built with Next.js, Prisma, Shadcn, 
 
 - **SQLite** - Lightweight, file-based database
 
-## 🚀 Getting Started
-
 ### Prerequisites
 
 - Node.js v18+
@@ -147,7 +145,7 @@ task-management-system/
 │   │   └── navbar.tsx
 │   ├── config/
 │   │   └── routes.ts
-│   ├── hooks/
+│   ├── hooks/                # React Query for data fetching and mutating
 │   │   └── use-tasks.ts
 │   ├── lib/                  # Utility functions
 │   │   ├── auth-utils.ts
@@ -170,7 +168,7 @@ task-management-system/
 └── README.md
 ```
 
-## 🧑‍💻 Development
+## Development
 
 ### Scripts
 
