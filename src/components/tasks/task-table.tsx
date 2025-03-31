@@ -128,7 +128,8 @@ export function TaskTable<TData extends { id: number }, TValue>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState({});
   const { data: tasksData, isLoading } = useTasks();
-  const { mutate: deleteTasks } = useDeleteTask();
+  const { mutate: deleteTask } = useDeleteTask();
+  const [deleteTaskId, setDeleteTaskId] = useState<number | null>(null);
 
   const table = useReactTable({
     data: tasksData || [],
@@ -295,7 +296,7 @@ export function TaskTable<TData extends { id: number }, TValue>({
             return (
               <div
                 key={row.id}
-                className={`border rounded-lg p-4 shadow-sm ${
+                className={`border rounded-sm p-2 shadow-sm ${
                   row.getIsSelected() ? "bg-blue-50" : ""
                 }`}
               >
@@ -325,26 +326,39 @@ export function TaskTable<TData extends { id: number }, TValue>({
                       size="sm"
                       onClick={(e) => {
                         e.stopPropagation();
-                        deleteTasks([task.id], {
-                          onSuccess: () => {
-                            toast.success("Task deleted successfully");
-                          },
-                          onError: (error) => {
-                            toast.error(
-                              error?.message || "Failed to delete task"
-                            );
-                          },
-                        });
+                        setDeleteTaskId(task.id);
                       }}
                     >
                       <Trash2 className="h-4 w-4 text-red-600" />
                     </Button>
                   </div>
+                  <DeleteConfirmationDialog
+                    open={deleteTaskId === task.id}
+                    onOpenChange={(open) => {
+                      if (!open) setDeleteTaskId(null);
+                    }}
+                    onConfirm={() => {
+                      if (deleteTaskId) {
+                        deleteTask(deleteTaskId, {
+                          onSuccess: () => {
+                            setDeleteTaskId(null);
+                            // toast.success("Task deleted successfully.");
+                          },
+                          onError: (error) => {
+                            console.log(error);
+                            // toast.error("Failed to delete task.");
+                          },
+                        });
+                      }
+                    }}
+                    title="Delete Task"
+                    description="Are you sure you want to delete this task? This action cannot be undone."
+                  />
                 </div>
 
                 {/* Clickable area for navigation */}
                 <div
-                  className="cursor-pointer"
+                  className="cursor-pointer transition-transform rounded-lg shadow-sm p-4 hover:scale-[1.02] hover:shadow-xl"
                   onClick={() => handleRowClick(task.id)}
                 >
                   {row.getVisibleCells().map((cell) => {
@@ -359,12 +373,12 @@ export function TaskTable<TData extends { id: number }, TValue>({
                     return (
                       <div
                         key={cell.id}
-                        className="grid grid-cols-2 gap-2 mb-2"
+                        className="grid grid-cols-2 border-b last:border-none pb-2 mb-2 gap-4"
                       >
-                        <div className="text-sm font-medium text-gray-500">
+                        <div className="text-sm font-semibold text-gray-600">
                           {columnDef.header as string}:
                         </div>
-                        <div className="text-sm">
+                        <div className="text-sm text-gray-800">
                           {flexRender(columnDef.cell, cell.getContext())}
                         </div>
                       </div>
@@ -386,10 +400,16 @@ export function TaskTable<TData extends { id: number }, TValue>({
         <div className="flex items-center gap-2 text-sm text-gray-600">
           <span>
             Page {table.getState().pagination.pageIndex + 1} of{" "}
-            {table.getPageCount()}
+            {Math.max(1, table.getPageCount())}
           </span>
           <span>|</span>
-          <span>{table.getFilteredRowModel().rows.length} task(s) total</span>
+          <span>
+            {table.getFilteredRowModel().rows.length === 0
+              ? "0 task total"
+              : table.getFilteredRowModel().rows.length === 1
+              ? "1 task total"
+              : `${table.getFilteredRowModel().rows.length} tasks total`}
+          </span>
         </div>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 ">

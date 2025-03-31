@@ -25,7 +25,6 @@ import { create } from "zustand";
 //   )
 // );
 
-// src/stores/auth-store.ts
 type AuthState = {
   isAuthenticated: boolean;
   login: () => void;

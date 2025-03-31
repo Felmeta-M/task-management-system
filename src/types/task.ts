@@ -6,7 +6,7 @@ export const taskFormSchema = z.object({
     .min(5, 'Title must be at least 5 characters')
     .max(50, 'Title must be less than 50 characters'),
   description: z.string()
-    .max(500, 'Description must be less than 500 characters')
+    .max(1000, 'Description must be less than 1000 characters')
     .optional(),
   status: z.nativeEnum(TaskStatus, {
     required_error: 'Status is required',
